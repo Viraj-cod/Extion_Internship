@@ -1,0 +1,51 @@
+class Employee:
+    def __init__(self, id, name, hourly_rate, hours_worked):
+        self.id = id
+        self.name = name
+        self.hourly_rate = hourly_rate
+        self.hours_worked = hours_worked
+
+    def calculate_salary(self):
+        # Simple calculation for salary
+        return self.hourly_rate * self.hours_worked
+
+    def __str__(self):
+        return f'ID: {self.id}, Name: {self.name}, Hourly Rate: ${self.hourly_rate:.2f}, Hours Worked: {self.hours_worked}, Salary: ${self.calculate_salary():.2f}'
+
+
+def input_employee_data():
+    id = input("Enter Employee ID: ")
+    name = input("Enter Employee Name: ")
+    hourly_rate = float(input("Enter Hourly Rate: "))
+    hours_worked = float(input("Enter Hours Worked: "))
+    return Employee(id, name, hourly_rate, hours_worked)
+
+def print_payroll_report(employees):
+    print("\nPayroll Report")
+    print("-" * 40)
+    for employee in employees:
+        print(employee)
+    print("-" * 40)
+
+def main():
+    employees = []
+    while True:
+        print("\nPayroll System")
+        print("1. Add Employee")
+        print("2. Print Payroll Report")
+        print("3. Exit")
+        choice = input("Enter your choice: ")
+        
+        if choice == '1':
+            employee = input_employee_data()
+            employees.append(employee)
+        elif choice == '2':
+            print_payroll_report(employees)
+        elif choice == '3':
+            print("Exiting the payroll system.")
+            break
+        else:
+            print("Invalid choice. Please enter a valid option.")
+
+if __name__ == "__main__":
+    main()
