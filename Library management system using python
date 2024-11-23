@@ -14,7 +14,6 @@ def initialize_db():
     conn.commit()
     conn.close()
 
-# Add a new book
 def add_book(title, author, year):
     conn = sqlite3.connect('library.db')
     cursor = conn.cursor()
@@ -23,7 +22,6 @@ def add_book(title, author, year):
     conn.close()
     print("Book added successfully!")
 
-# View all books
 def view_books():
     conn = sqlite3.connect('library.db')
     cursor = conn.cursor()
@@ -38,7 +36,6 @@ def view_books():
     else:
         print("No books found in the library.")
 
-# Delete a book
 def delete_book(book_id):
     conn = sqlite3.connect('library.db')
     cursor = conn.cursor()
@@ -47,7 +44,6 @@ def delete_book(book_id):
     conn.close()
     print("Book deleted successfully!")
 
-# Main menu
 def main_menu():
     while True:
         print("\nLibrary Management System")
