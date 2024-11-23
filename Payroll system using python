@@ -1,51 +1,90 @@
-class Employee:
-    def __init__(self, id, name, hourly_rate, hours_worked):
-        self.id = id
-        self.name = name
-        self.hourly_rate = hourly_rate
-        self.hours_worked = hours_worked
+import sqlite3
 
-    def calculate_salary(self):
-        # Simple calculation for salary
-        return self.hourly_rate * self.hours_worked
+def initialize_db():
+    conn = sqlite3.connect('payroll.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS employees (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            position TEXT NOT NULL,
+            salary REAL NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
-    def __str__(self):
-        return f'ID: {self.id}, Name: {self.name}, Hourly Rate: ${self.hourly_rate:.2f}, Hours Worked: {self.hours_worked}, Salary: ${self.calculate_salary():.2f}'
+def add_employee(name, position, salary):
+    conn = sqlite3.connect('payroll.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO employees (name, position, salary) VALUES (?, ?, ?)", (name, position, salary))
+    conn.commit()
+    conn.close()
+    print("Employee added successfully!")
 
+def view_employees():
+    conn = sqlite3.connect('payroll.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM employees")
+    employees = cursor.fetchall()
+    conn.close()
+    
+    if employees:
+        print("\nEmployees:")
+        for emp in employees:
+            print(f"ID: {emp[0]}, Name: '{emp[1]}', Position: '{emp[2]}', Salary: {emp[3]:.2f}")
+    else:
+        print("No employees found.")
 
-def input_employee_data():
-    id = input("Enter Employee ID: ")
-    name = input("Enter Employee Name: ")
-    hourly_rate = float(input("Enter Hourly Rate: "))
-    hours_worked = float(input("Enter Hours Worked: "))
-    return Employee(id, name, hourly_rate, hours_worked)
+def update_employee(emp_id, name, position, salary):
+    conn = sqlite3.connect('payroll.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE employees SET name=?, position=?, salary=? WHERE id=?", (name, position, salary, emp_id))
+    conn.commit()
+    conn.close()
+    print("Employee details updated successfully!")
 
-def print_payroll_report(employees):
-    print("\nPayroll Report")
-    print("-" * 40)
-    for employee in employees:
-        print(employee)
-    print("-" * 40)
+def delete_employee(emp_id):
+    conn = sqlite3.connect('payroll.db')
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM employees WHERE id=?", (emp_id,))
+    conn.commit()
+    conn.close()
+    print("Employee deleted successfully!")
 
-def main():
-    employees = []
+def main_menu():
     while True:
-        print("\nPayroll System")
+        print("\nPayroll Management System")
         print("1. Add Employee")
-        print("2. Print Payroll Report")
-        print("3. Exit")
-        choice = input("Enter your choice: ")
+        print("2. View Employees")
+        print("3. Update Employee")
+        print("4. Delete Employee")
+        print("5. Exit")
+        
+        choice = input("Choose an option: ")
         
         if choice == '1':
-            employee = input_employee_data()
-            employees.append(employee)
+            name = input("Enter employee name: ")
+            position = input("Enter employee position: ")
+            salary = float(input("Enter employee salary: "))
+            add_employee(name, position, salary)
         elif choice == '2':
-            print_payroll_report(employees)
+            view_employees()
         elif choice == '3':
-            print("Exiting the payroll system.")
+            emp_id = int(input("Enter employee ID to update: "))
+            name = input("Enter new employee name: ")
+            position = input("Enter new employee position: ")
+            salary = float(input("Enter new employee salary: "))
+            update_employee(emp_id, name, position, salary)
+        elif choice == '4':
+            emp_id = int(input("Enter employee ID to delete: "))
+            delete_employee(emp_id)
+        elif choice == '5':
+            print("Exiting the program. Goodbye!")
             break
         else:
-            print("Invalid choice. Please enter a valid option.")
+            print("Invalid choice! Please select a valid option.")
 
 if __name__ == "__main__":
-    main()
+    initialize_db()  
+    main_menu() 
